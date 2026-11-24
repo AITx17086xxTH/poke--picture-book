@@ -1,11 +1,33 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from "react";
+import heroImg from "./assets/hero.png";
+import reactLogo from "./assets/react.svg";
+import viteLogo from "./assets/vite.svg";
+import { PokemonCard } from "./components/PokemonCard";
+import { toKatakana } from "./utils/kana";
+
+import "./App.css";
+
+type Pokemon = {
+  id: number;
+  name: string;
+};
+
+const pokemonList: Pokemon[] = [
+  { id: 1, name: "フシギダネ" },
+  { id: 4, name: "ヒトカゲ" },
+  { id: 7, name: "ゼニガメ" },
+  { id: 25, name: "ピカチュウ" },
+  { id: 39, name: "プリン" },
+  { id: 6, name: "リザードン" },
+];
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(10);
+  const [keyword, setKeyword] = useState("");
+
+  const filteredList = pokemonList.filter((pokemon) =>
+    toKatakana(pokemon.name).includes(toKatakana(keyword)),
+  );
 
   return (
     <>
@@ -16,18 +38,29 @@ function App() {
           <img src={viteLogo} className="vite" alt="Vite logo" />
         </div>
         <div>
-          <h1>Get started</h1>
+          <h1>ポケモン図鑑</h1>
           <p>
             Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
           </p>
         </div>
+        <input
+          type="text"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          placeholder="名前で検索"
+        />
+
         <button
           type="button"
           className="counter"
           onClick={() => setCount((count) => count + 1)}
         >
-          Count is {count}
+          押した回数 {count}
         </button>
+        {filteredList.length === 0 && <p>見つかりませんでした</p>}
+        {filteredList.map((pokemon) => (
+          <PokemonCard key={pokemon.id} id={pokemon.id} name={pokemon.name} />
+        ))}
       </section>
 
       <div className="ticks"></div>
@@ -116,7 +149,7 @@ function App() {
       <div className="ticks"></div>
       <section id="spacer"></section>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
